@@ -8,10 +8,12 @@ import Button from 'react-bootstrap/Button';
 import Img from '.././assets/img5.png';
 import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
+import { useSignIn } from "react-auth-kit";
 
 function Hero() {
 
   const history = useNavigate();
+  const signIn = useSignIn();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -20,8 +22,13 @@ function Hero() {
     try {
       axios.post("http://localhost:4000/", {email, password})
       .then( res => {
-        console.log(res, res.data);
-        if (res.data.message == "Login Successfull") {
+        if (res.status == 201) {
+          signIn({
+            token: res.data.token,
+            expiresIn: 3600,
+            tokenType: "Bearer",
+            authState: { email: email },
+          });
           history("/home");
         }
         else if (res.data.message == "User not registered") {
@@ -35,7 +42,7 @@ function Hero() {
         console.log(e);
 
       })
-    }
+     }
     catch(e) {
       console.log(e);
     }

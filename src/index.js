@@ -8,17 +8,33 @@ import Home from './routes/Home';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider, RequireAuth } from "react-auth-kit";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-        <Route path="/Home" element={<Home />} />
-        <Route path="/Signup" element={<Signup />} />
-        <Route path="/DocumentEditor" element={<DocumentEditor />} />
-    </Routes>
-  </BrowserRouter>
+  <AuthProvider
+    authType={"cookie"}
+    authName={"_auth"}
+    cooieDomain={window.location.hostname}
+    cookieSecure={false}
+  >
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+          <Route path="/Home" element={
+            <RequireAuth loginPath={'/'}>
+              <Home />
+            </RequireAuth>
+          } />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/DocumentEditor" element={
+            <RequireAuth loginPath={'/'}>
+              <DocumentEditor />
+            </RequireAuth>
+          } />
+      </Routes>
+    </BrowserRouter>
+  </AuthProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

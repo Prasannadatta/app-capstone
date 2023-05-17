@@ -20,10 +20,10 @@ function Signup() {
     try {
       axios.post("http://localhost:4000/signup", {name, email, phoneNumber ,password})
       .then( res => {
-        if (res.data == "exist") {
+        if (res.data === "exist") {
           alert("User already exists.");
         }
-        else if (res.data == "notExist") {
+        else if (res.status === 201) {
           alert("Signup succesful. Login to proceed to the Document Editor");
           history("/");
         }
